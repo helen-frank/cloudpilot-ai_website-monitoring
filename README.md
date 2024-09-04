@@ -15,7 +15,7 @@ Monitore your websites availability, http status code (current and history), cer
 
 ## Usage
 
-* `git clone git@github.com:mbelloiseau/website-monitoring.git && cd website-monitoring`
+* `git clone https://github.com/jwcesign/website-monitoring.git && cd website-monitoring`
 * Edit `config/prometheus/targets.yml` (see targets.yml.example) or use `./gen_target.sh website-1.tld website-2.tld ...`
 * Create and start containers `docker-compose up -d`
 * [Visualize dashboards](http://localhost:3000/)
