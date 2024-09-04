@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: blackbox-exporter
+  name: blackbox-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: blackbox-exporter
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.service: blackbox-exporter
+    spec:
+      containers:
+        - args:
+            - --config.file=/etc/prometheus/blackbox-exporter.yml
+          image: prom/blackbox-exporter:latest
+          name: blackbox-exporter
+          ports:
+            - containerPort: 9115
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/prometheus/blackbox-exporter.yml
+              name: blackbox-exporter-cm0
+              subPath: blackbox-exporter.yml
+      hostname: blackbox
+      restartPolicy: Always
+      volumes:
+        - configMap:
+            items:
+              - key: blackbox-exporter.yml
+                path: blackbox-exporter.yml
+            name: blackbox-exporter-cm0
+          name: blackbox-exporter-cm0
