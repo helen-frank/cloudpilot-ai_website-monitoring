@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: grafana
+  name: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: grafana
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.service: grafana
+    spec:
+      containers:
+        - env:
+            - name: GF_AUTH_ANONYMOUS_ENABLED
+              value: "true"
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: CHANGEME
+          image: grafana/grafana:7.2.0
+          name: grafana
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+      hostname: grafana
+      restartPolicy: Always

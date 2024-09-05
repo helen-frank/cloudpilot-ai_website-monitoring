@@ -1,0 +1,12 @@
+apiVersion: v1
+data:
+  targets.yml: |
+    - targets:
+      - baidu.com
+kind: ConfigMap
+metadata:
+  annotations:
+    use-subpath: "true"
+  labels:
+    io.kompose.service: prometheus
+  name: prometheus-cm1

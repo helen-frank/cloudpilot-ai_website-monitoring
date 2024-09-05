@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: prometheus
+  name: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: prometheus
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.service: prometheus
+    spec:
+      containers:
+        - args:
+            - --config.file=/etc/prometheus/prometheus.yml
+            - --storage.tsdb.path=/prometheus
+            - --storage.tsdb.retention.time=30d
+            - --web.console.libraries=/usr/share/prometheus/console_libraries
+            - --web.console.templates=/usr/share/prometheus/consoles
+            - --web.enable-admin-api
+          image: prom/prometheus:latest
+          name: prometheus
+          ports:
+            - containerPort: 9090
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/prometheus/prometheus.yml
+              name: prometheus-cm0
+              readOnly: true
+              subPath: prometheus.yml
+            - mountPath: /etc/prometheus/targets.yml
+              name: prometheus-cm1
+              readOnly: true
+              subPath: targets.yml
+            - mountPath: /etc/prometheus/rules
+              name: prometheus-cm2
+            - mountPath: /prometheus
+              name: prometheus-data
+      hostname: prometheus
+      restartPolicy: Always
+      volumes:
+        - configMap:
+            items:
+              - key: prometheus.yml
+                path: prometheus.yml
+            name: prometheus-cm0
+          name: prometheus-cm0
+        - configMap:
+            items:
+              - key: targets.yml
+                path: targets.yml
+            name: prometheus-cm1
+          name: prometheus-cm1
+        - configMap:
+            name: prometheus-cm2
+          name: prometheus-cm2
+        - name: prometheus-data
+          persistentVolumeClaim:
+            claimName: prometheus-data

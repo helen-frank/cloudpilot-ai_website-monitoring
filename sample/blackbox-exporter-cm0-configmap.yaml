@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  blackbox-exporter.yml: "modules:\n  http_2xx:\n    prober: http\n    timeout: 5s\n    http:\n      valid_http_versions: [\"HTTP/1.1\", \"HTTP/2.0\"]\n      valid_status_codes: []\n      method: GET\n      preferred_ip_protocol: \"ip4\"\n      ip_protocol_fallback: false \n  icmp:\n    prober: icmp\n    icmp:\n      preferred_ip_protocol: \"ip4\"\n      ip_protocol_fallback: false \n"
+kind: ConfigMap
+metadata:
+  annotations:
+    use-subpath: "true"
+  labels:
+    io.kompose.service: blackbox-exporter
+  name: blackbox-exporter-cm0
